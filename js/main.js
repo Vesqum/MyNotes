@@ -1,77 +1,74 @@
 const addBtn =  document.querySelector('.add');
-const deleteAllBtn =  document.querySelector('.delete-all');
-const noteArea =  document.querySelector('.note-area');
+const saveBtn =  document.querySelector('.save');
+const cancelBtn =  document.querySelector('.cancel');
 
+const deleteAllBtn =  document.getElementsByClassName('delete-note');
+
+
+const noteArea =  document.querySelector('.note-area');
 const notePanel =  document.querySelector('.note-panel');
 const errorInfo =  document.querySelector('.error');
 const textArea = document.querySelector('#text')
 const category = document.querySelector('#category');
-const saveBtn =  document.querySelector('.save');
-const cancelBtn =  document.querySelector('.cancel');
+let selectedValue;
 
-const showErorr = e => {
+let cardID = 0;
 
-    if(e.target.value === '0' || textArea.value === '') {
-        errorInfo.style.visibility = 'visible'
-    } else {
-        errorInfo.style.visibility = 'hidden'
-        addNote();
-        notePanel.style.display = 'none'
-    } 
+const openPanel = () => {
+    notePanel.style.display = 'flex'; 
 }
 
-
-
-const showNotePanel = () => {
-
-    if(!(notePanel.style.display === 'block')) {
-        notePanel.style.display = 'block'
-    } else {
-        notePanel.style.display = 'none'
-    }
+const closePanel = () => {
+    notePanel.style.display = 'none';
+    errorInfo.style.visibility = 'hidden';
+    textArea.value = '';
+    category.selectedIndex = 0;
 }
 
 const addNote = () => {
-
-    const num = 0;
-
-    const newNote = document.createElement('div')
-    newNote.classList.add('note')
-
-    const noteHeader = document.createElement('div')
-    noteHeader.classList.add('note-header')
-
-    const noteTitle = document.createElement('h3')
-    noteTitle.classList.add('note-title')
-    noteTitle.textContent = 'Notatka#1'
-
-    const deleteBtn = document.createElement('button')
-    const iconDelete = document.createElement('i')
-    iconDelete.classList.add('fas')
-    deleteBtn.classList.add('delete-note')
-    deleteBtn.append(iconDelete)
     
-    noteHeader.append(noteTitle, deleteBtn)
+    if(textArea.value !== '' && category.options[category.selectedIndex].value !== '0') {
+        createNote();
+        errorInfo.style.visibility = 'hidden'
+    } else {
+        errorInfo.style.visibility = 'visible'
+    }
+}
 
-    const noteBody = document.createElement('div')
-    noteBody.classList.add('note-body')
-    noteBody.textContent = textArea.value
+const createNote = () => {
+    const newNotes = document.createElement('div')
+    newNotes.classList.add('note')
+    newNotes.setAttribute('id', cardID)
 
-    newNote.append(noteHeader, noteBody)
-    noteArea.append(newNote)
-    
+    newNotes.innerHTML = `
+    <div class="note">
+                <div class="note-header">
+                    <h3 class="note-title">${selectValue}</h3>
+                    <button class="delete-note">
+                        <i class="fas fa-times icon"></i>
+                    </button>
+                </div>
+                <div class="note-body">
+                    ${textArea.value}
+                </div>
+    </div>
+            `
+
+    noteArea.appendChild(newNotes)
+    textArea.value = ''
+    category.selectedIndex = 0;
+    notePanel.style.display = 'none'
+}
+
+const selectValue = () => {
+    selectValue = category.options[category.selectedIndex].text;
 
 }
 
 
+addBtn.addEventListener('click', openPanel)
+cancelBtn.addEventListener('click', closePanel)
+saveBtn.addEventListener('click',  addNote)
 
 
-addBtn.addEventListener('click', showNotePanel)
-cancelBtn.addEventListener('click', showNotePanel)
-saveBtn.addEventListener('click', showErorr)
 
-category.addEventListener('click', e => {
-    console.log(e.target.value);
-
-    console.log(textArea.value);
-})
